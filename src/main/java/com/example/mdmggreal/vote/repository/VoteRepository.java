@@ -18,5 +18,6 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     List<Object[]> findChampionNamesWithAverageRatioByPostId(@Param("postId") Long postId);
 
     List<Vote> findByMemberId(Long memberId);
+
 }
 

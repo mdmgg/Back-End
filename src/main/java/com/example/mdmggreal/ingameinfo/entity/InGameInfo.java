@@ -23,7 +23,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class InGameInfo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "in_game_info_id")
     private Long id;
     private String championName;
     @Enumerated(STRING)

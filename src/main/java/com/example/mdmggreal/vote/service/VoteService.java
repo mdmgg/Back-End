@@ -6,6 +6,8 @@ import com.example.mdmggreal.ingameinfo.entity.InGameInfo;
 import com.example.mdmggreal.member.entity.Member;
 import com.example.mdmggreal.member.repository.MemberRepository;
 import com.example.mdmggreal.post.entity.Post;
+import com.example.mdmggreal.post.repository.PostQueryRepository;
+import com.example.mdmggreal.post.repository.PostRepository;
 import com.example.mdmggreal.vote.dto.VoteAvgDTO;
 import com.example.mdmggreal.vote.dto.VoteSaveDTO;
 import com.example.mdmggreal.vote.entity.Vote;
@@ -29,6 +31,8 @@ public class VoteService {
 
     private final VoteRepository voteRepository;
     private final VoteQueryRepository voteQueryRepository;
+    private final PostRepository postRepository;
+    private final PostQueryRepository postQueryRepository;
 
     public List<Vote> saveVotes(List<VoteSaveDTO> voteSaveDTOS, String mobile, Long postId) {
         Member member = getMember(mobile);
@@ -66,6 +70,24 @@ public class VoteService {
                 .filter(Objects::nonNull)
                 .map(InGameInfo::getPost)
                 .collect(Collectors.toList());
+    }
+
+    public List<Vote> getHighRatioVotesByMemberId(Long memberId) {
+        // 참여한 투표중 가장 과실 높은 과실을 투표한 투표목록
+        List<Vote> voteList = voteQueryRepository.findHighRatioVotesByMemberId(memberId);
+        int totalCount = voteList.size();
+        int collectCount = 0;
+        for (Vote vote : voteList) {
+            Post post = postQueryRepository.findByVoteId(vote.getId());
+            Double topRatioByPostId = voteQueryRepository.findTopRatioByPostId(post.getId());
+            if (vote.getRatio() >= topRatioByPostId) {
+                collectCount += 1;
+            }
+        }
+
+
+
+
     }
 
 

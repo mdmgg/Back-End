@@ -10,8 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.example.mdmggreal.ingameinfo.entity.QInGameInfo.inGameInfo;
 import static com.example.mdmggreal.member.entity.QMember.member;
 import static com.example.mdmggreal.post.entity.QPost.post;
+import static com.example.mdmggreal.vote.entity.QVote.vote;
 
 @Repository
 @Slf4j
@@ -72,5 +74,13 @@ public Predicate getPostListPredicate(String keyword) {
                 .orderBy(post.createdDateTime.desc())
                 .fetch();
 
+    }
+
+    public Post findByVoteId(Long voteId) {
+        return from(post)
+                .leftJoin(inGameInfo).on(post.id.eq(inGameInfo.post.id))
+                .leftJoin(vote).on(inGameInfo.id.eq(vote.inGameInfo.id))
+                .where(vote.id.eq(voteId))
+                .fetchOne();
     }
 }
