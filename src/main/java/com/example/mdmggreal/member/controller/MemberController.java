@@ -1,10 +1,8 @@
 package com.example.mdmggreal.member.controller;
 
-import com.example.mdmggreal.global.response.BaseResponse;
-import com.example.mdmggreal.member.dto.MemberDTO;
-import com.example.mdmggreal.member.dto.response.EmailCheckResponse;
-import com.example.mdmggreal.member.dto.response.MobileCheckResponse;
+import com.example.mdmggreal.member.dto.request.SignUpRequest;
 import com.example.mdmggreal.member.dto.response.NicknameCheckResponse;
+import com.example.mdmggreal.member.dto.response.SignUpResponse;
 import com.example.mdmggreal.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,24 +20,9 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse> signup(@RequestBody MemberDTO memberDTO) {
-        memberService.signup(memberDTO);
-        return ResponseEntity.ok(BaseResponse.from(HttpStatus.CREATED));
+    public ResponseEntity<SignUpResponse> signup(@RequestBody SignUpRequest request) {
+        return ResponseEntity.ok(memberService.signUp(request));
     }
-
-    @GetMapping("/mobilecheck")
-    public ResponseEntity<MobileCheckResponse> mobileCheck(@RequestParam("mobile") String mobile) {
-        String phone = memberService.checkMobile(mobile);
-        return ResponseEntity.ok(MobileCheckResponse.from(phone, HttpStatus.OK));
-    }
-
-    @GetMapping("/emailcheck")
-    public ResponseEntity<EmailCheckResponse> emailCheck(@RequestParam("email") String email) {
-        String token = memberService.checkEmail(email);
-        return ResponseEntity.ok(EmailCheckResponse.from(token, HttpStatus.OK));
-    }
-
-
 
     /*
      * 닉네임 중복 체크

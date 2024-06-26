@@ -4,9 +4,11 @@ import com.example.mdmggreal.global.exception.CustomException;
 import com.example.mdmggreal.global.exception.ErrorCode;
 import com.example.mdmggreal.global.security.CustomUserInfoDto;
 import com.example.mdmggreal.global.security.JwtUtil;
-import com.example.mdmggreal.member.dto.MemberDTO;
+import com.example.mdmggreal.member.dto.request.SignUpRequest;
+import com.example.mdmggreal.member.dto.response.SignUpResponse;
 import com.example.mdmggreal.member.entity.Member;
 import com.example.mdmggreal.member.repository.MemberRepository;
+import com.example.mdmggreal.oauth.dto.AuthTokens;
 import com.example.mdmggreal.vote.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,32 +21,15 @@ public class MemberService {
     private final VoteService voteService;
     private final JwtUtil jwtUtil;
 
-
-    public String checkMobile(String mobile) {
-        if (memberRepository.existsByMobile(mobile)) {
-            Member member = memberRepository.findByMobile(mobile).get();
-
-            return jwtUtil.createAccessToken(CustomUserInfoDto.of(member));
-        } else {
-            return null;
-        }
-    }
-
-    public String checkEmail(String email) {
-        if (memberRepository.existsByEmail(email)) {
-            Member member = memberRepository.findByEmail(email).get();
-
-            return jwtUtil.createAccessToken(CustomUserInfoDto.of(member));
-        } else {
-            return null;
-        }
-    }
-
-    public void signup(MemberDTO memberDTO) {
-        if (memberRepository.existsByEmail(memberDTO.getEmail())) {
+    public SignUpResponse signUp(SignUpRequest request) {
+        if (memberRepository.existsByEmail(request.getEmail())) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXISTS);
         }
-        memberRepository.save(Member.from(memberDTO));
+        Member savedMember = memberRepository.save(Member.from(request));
+
+        AuthTokens createdTokens = jwtUtil.createTokens(CustomUserInfoDto.of(savedMember));
+
+        return SignUpResponse.from(savedMember, createdTokens);
     }
 
     public Boolean checkNickname(String nickname) {

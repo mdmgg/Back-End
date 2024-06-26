@@ -24,16 +24,12 @@ public class QMember extends EntityPathBase<Member> {
 
     public final com.example.mdmggreal.global.entity.QBaseEntity _super = new com.example.mdmggreal.global.entity.QBaseEntity(this);
 
-    public final StringPath age = createString("age");
-
     public final com.example.mdmggreal.member.type.QAgree agree;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDateTime = _super.createdDateTime;
 
     public final StringPath email = createString("email");
-
-    public final StringPath gender = createString("gender");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -44,6 +40,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final EnumPath<com.example.mdmggreal.member.type.OAuthProvider> oAuthProvider = createEnum("oAuthProvider", com.example.mdmggreal.member.type.OAuthProvider.class);
+
     public final NumberPath<Integer> point = createNumber("point", Integer.class);
 
     public final StringPath profileImage = createString("profileImage");
@@ -51,8 +49,6 @@ public class QMember extends EntityPathBase<Member> {
     public final EnumPath<com.example.mdmggreal.member.type.Role> role = createEnum("role", com.example.mdmggreal.member.type.Role.class);
 
     public final EnumPath<com.example.mdmggreal.ingameinfo.type.Tier> tier = createEnum("tier", com.example.mdmggreal.ingameinfo.type.Tier.class);
-
-    public final StringPath token = createString("token");
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);

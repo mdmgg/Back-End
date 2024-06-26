@@ -37,13 +37,9 @@ public class MemberDTO  {
     public static MemberDTO from(Member member) {
         return MemberDTO.builder()
                 .nickname(member.getNickname())
-                .age(member.getAge())
                 .email(member.getEmail())
                 .mobile(member.getMobile())
-                .gender(member.getGender())
                 .tier(member.getTier().getName())
                 .build();
-
     }
-
 }
