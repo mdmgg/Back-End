@@ -17,9 +17,9 @@ import java.util.Optional;
 import static com.example.mdmggreal.ingameinfo.entity.QInGameInfo.inGameInfo;
 import static com.example.mdmggreal.member.entity.QMember.member;
 import static com.example.mdmggreal.post.entity.QPost.post;
-import static com.example.mdmggreal.post.entity.type.PostStatus.PROGRESS;
 import static com.example.mdmggreal.vote.entity.QVote.vote;
 import static com.querydsl.jpa.JPAExpressions.select;
+import static com.querydsl.jpa.JPAExpressions.selectFrom;
 
 @Repository
 @Slf4j
@@ -41,14 +41,22 @@ public class VoteQueryRepository extends QuerydslRepositorySupport {
     }
 
     public List<Vote> getVoteListByPostId(Long postId) {
-        return from(vote)
-                .leftJoin(inGameInfo)
-                .on(vote.inGameInfo.id.eq(inGameInfo.id))
-                .leftJoin(post)
-                .on(inGameInfo.post.id.eq(post.id))
+        QVote vote = QVote.vote;
+        QVote voteSub = new QVote("voteSub");
+        QInGameInfo inGameInfo = QInGameInfo.inGameInfo;
+        QPost post = QPost.post;
+
+        // 서브쿼리: 각 멤버별로 가장 높은 ratio 값을 찾음
+        return selectFrom(vote)
+                .leftJoin(vote.inGameInfo, inGameInfo)
+                .leftJoin(inGameInfo.post, post)
                 .where(post.id.eq(postId)
-                        .and(post.status.eq(PROGRESS)))
-                .groupBy(vote.memberId)
+                        .and(vote.ratio.in(
+                              select(voteSub.ratio.max())
+                                        .from(voteSub)
+                                        .where(voteSub.inGameInfo.post.id.eq(postId))
+                                        .groupBy(voteSub.memberId)
+                        )))
                 .fetch();
     }
 

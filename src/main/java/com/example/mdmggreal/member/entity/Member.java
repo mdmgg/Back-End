@@ -101,4 +101,13 @@ public class Member extends BaseEntity {
                 .oAuthProvider(NAVER)
                 .build();
     }
+
+    public void editTier(int correctCount, int totalCount) {
+        for (Tier tier : Tier.values()) {
+            if (totalCount >= tier.getJudgement() && correctCount >= tier.getCorrectJudgement()) {
+                this.tier = tier;
+                break;
+            }
+        }
+    }
 }

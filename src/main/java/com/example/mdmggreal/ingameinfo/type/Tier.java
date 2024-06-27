@@ -6,18 +6,20 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Tier {
-    CHALLENGER("챌린저"),
-    GRANDMASTER("그랜드마스터"),
-    MASTER("마스터"),
-    DIAMOND("다이아몬드"),
-    EMERALD("에메랄드"),
-    PLATINUM("플래티넘"),
-    GOLD("골드"),
-    SILVER("실버"),
-    BRONZE("브론즈"),
-    IRON("아이언"),
-    UNRANK("언랭");
+    CHALLENGER("챌린저", 2000L, 1200L),
+    GRANDMASTER("그랜드마스터", 1000L, 600L),
+    MASTER("마스터", 500L, 300L),
+    DIAMOND("다이아몬드", 300L, 180L),
+    EMERALD("에메랄드", 200L, 120L),
+    PLATINUM("플래티넘", 150L, 90L),
+    GOLD("골드" , 100L, 60L),
+    SILVER("실버", 50L, 30L),
+    BRONZE("브론즈", 30L, 18L),
+    IRON("아이언", 1L, 1L),
+    UNRANK("언랭", 0L, 0L);
     private final String name;
+    private final Long judgement;
+    private final Long correctJudgement;
 
 
     public static Tier fromName(String name) {

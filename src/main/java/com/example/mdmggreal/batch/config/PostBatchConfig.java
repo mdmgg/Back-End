@@ -1,6 +1,7 @@
 package com.example.mdmggreal.batch.config;
 
 import com.example.mdmggreal.alarm.service.PostAlarmService;
+import com.example.mdmggreal.member.repository.MemberRepository;
 import com.example.mdmggreal.post.entity.Post;
 import com.example.mdmggreal.post.repository.PostRepository;
 import com.example.mdmggreal.vote.entity.Vote;
@@ -28,6 +29,7 @@ public class PostBatchConfig extends DefaultBatchConfiguration {
     private final PostRepository postRepository;
     private final VoteQueryRepository voteQueryRepository;
     private final PostAlarmService postAlarmService;
+    private final MemberRepository memberRepository;
 
     @Bean
     public Job updatePostJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
