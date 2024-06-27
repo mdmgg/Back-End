@@ -6,6 +6,7 @@ import com.example.mdmggreal.post.entity.Post;
 import com.example.mdmggreal.post.repository.PostRepository;
 import com.example.mdmggreal.vote.entity.Vote;
 import com.example.mdmggreal.vote.repository.VoteQueryRepository;
+import com.example.mdmggreal.vote.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -30,6 +31,7 @@ public class PostBatchConfig extends DefaultBatchConfiguration {
     private final VoteQueryRepository voteQueryRepository;
     private final PostAlarmService postAlarmService;
     private final MemberRepository memberRepository;
+    private final VoteService voteService;
 
     @Bean
     public Job updatePostJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
@@ -67,11 +69,24 @@ public class PostBatchConfig extends DefaultBatchConfiguration {
 
     private void notifyVotes(Post post) {
         List<Vote> voteList = voteQueryRepository.getVoteListByPostId(post.getId());
+        getHighRatio(post);
         if (!voteList.isEmpty()) {
             for (Vote vote : voteList) {
                 postAlarmService.addAlarm(post, vote.getMemberId());
             }
         }
 
+    }
+
+    private void getHighRatio(Post post) {
+        Double highRatioVote = voteService.getHighRatioVoteByPost(post);
+        editMemberTier(post.getId());
+    }
+
+    private void editMemberTier(Long id) {
+        List<Vote> voteList = voteQueryRepository.getVoteListByPostId(id);
+        for (Vote vote : voteList) {
+            vote.getMemberId()
+        }
     }
 }

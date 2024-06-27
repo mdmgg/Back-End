@@ -1,7 +1,9 @@
 package com.example.mdmggreal.vote.repository;
 
 
+import com.example.mdmggreal.ingameinfo.entity.InGameInfo;
 import com.example.mdmggreal.ingameinfo.entity.QInGameInfo;
+import com.example.mdmggreal.post.entity.Post;
 import com.example.mdmggreal.post.entity.QPost;
 import com.example.mdmggreal.vote.entity.QVote;
 import com.example.mdmggreal.vote.entity.Vote;
@@ -73,34 +75,8 @@ public class VoteQueryRepository extends QuerydslRepositorySupport {
                         .fetchFirst() != null;
     }
 
-    public List<Vote> findHighRatioVotesByMemberId(Long memberId) {
-        QVote v = QVote.vote;
-        QInGameInfo igi = QInGameInfo.inGameInfo;
-        QPost p = QPost.post;
 
-
-        QVote v2 = new QVote("v2");
-        QInGameInfo igi2 = new QInGameInfo("igi2");
-        QPost p2 = new QPost("p2");
-
-        return select(v)
-                .from(v)
-                .leftJoin(v.inGameInfo, igi)
-                .leftJoin(igi.post, p)
-                .where(v.memberId.eq(memberId)
-                        .and(v.ratio.eq(
-                                select(v2.ratio.max())
-                                        .from(v2)
-                                        .leftJoin(v2.inGameInfo, igi2)
-                                        .leftJoin(igi2.post, p2)
-                                        .where(v2.memberId.eq(v.memberId)
-                                                .and(p2.id.eq(p.id)))
-                        )))
-                .orderBy(v.ratio.desc())
-                .fetch();
-    }
-
-    public Double findTopRatioByPostId(Long id) {
+    public InGameInfo getVoteHighRatio(Long id) {
         QVote v = QVote.vote;
         QInGameInfo igi = QInGameInfo.inGameInfo;
         QPost p = QPost.post;
@@ -109,8 +85,8 @@ public class VoteQueryRepository extends QuerydslRepositorySupport {
         NumberExpression<Double> avgRatio = v.ratio.avg();
 
         // 메인 쿼리 정의
-        Double topAvgRatio = select(avgRatio.max())
-                .from(v)
+
+                from(inGameInfo)
                 .leftJoin(v.inGameInfo, igi)
                 .leftJoin(igi.post, p)
                 .where(p.id.eq(id))
@@ -119,4 +95,5 @@ public class VoteQueryRepository extends QuerydslRepositorySupport {
 
         return topAvgRatio;
     }
+
 }

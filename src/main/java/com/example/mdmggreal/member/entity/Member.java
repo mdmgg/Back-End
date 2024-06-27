@@ -102,9 +102,9 @@ public class Member extends BaseEntity {
                 .build();
     }
 
-    public void editTier(int correctCount, int totalCount) {
+    public void editTier(int correctCount, int VoteTotalCount) {
         for (Tier tier : Tier.values()) {
-            if (totalCount >= tier.getJudgement() && correctCount >= tier.getCorrectJudgement()) {
+            if (VoteTotalCount >= tier.getTotalVoteCount() && correctCount >= tier.getCorrectedVoteCount()) {
                 this.tier = tier;
                 break;
             }

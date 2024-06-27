@@ -59,26 +59,7 @@ public class VoteService {
                 .collect(Collectors.toList());
     }
 
-    public List<Vote> getHighRatioVotesByMemberId(Long memberId) {
-        List<Vote> voteList = voteQueryRepository.findHighRatioVotesByMemberId(memberId);
-        int collectCount = calculateCollectCount(voteList);
 
-        Member member = getMemberById(memberId);
-        member.editTier(collectCount, voteList.size());
-        return voteList;
-    }
-
-    private int calculateCollectCount(List<Vote> voteList) {
-        int collectCount = 0;
-        for (Vote vote : voteList) {
-            Post post = postQueryRepository.findByVoteId(vote.getId());
-            Double topRatioByPostId = voteQueryRepository.findTopRatioByPostId(post.getId());
-            if (vote.getRatio() >= topRatioByPostId) {
-                collectCount += 1;
-            }
-        }
-        return collectCount;
-    }
 
     private Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(
@@ -113,5 +94,9 @@ public class VoteService {
                 .memberId(member.getId())
                 .inGameInfo(inGameInfo)
                 .build();
+    }
+
+    public Double getHighRatioVoteByPost(Post post) {
+        return voteQueryRepository.getVoteHighRatio(post.getId());
     }
 }

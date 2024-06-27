@@ -18,8 +18,8 @@ public enum Tier {
     IRON("아이언", 1L, 1L),
     UNRANK("언랭", 0L, 0L);
     private final String name;
-    private final Long judgement;
-    private final Long correctJudgement;
+    private final Long totalVoteCount;
+    private final Long correctedVoteCount;
 
 
     public static Tier fromName(String name) {
